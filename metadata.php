@@ -19,7 +19,7 @@ $aModule = array(
     'id'           => 'gw_oxid_articles_extended',
     'title'        => 'Erweiterte Artikel',
 //     'thumbnail'    => 'out/admin/img/logo.jpg',
-    'version'      => '1.0.0',
+    'version'      => '1.0.1',
     'author'       => 'Gregor Wendland',
     'email'		   => 'kontakt@gewend.de',
     'url'		   => 'https://www.gewend.de',
@@ -27,6 +27,7 @@ $aModule = array(
     	'de'		=> 'Erweitert die Möglichkeiten von OXID eShop Artikeln
 							<ul>
 								<li>Fügt der Article Klasse die Funktion variant_has_stock($varselect) hinzu</li>
+								<li>Berechnet die Schuhgrößen US und UK anhand der EU Schuhgröße (Voraussetzung: des Modul gw_oxid_attributes_extended muss installiert sein)</li>
 							</ul>
 						',
     ),
