@@ -21,8 +21,8 @@ class Article extends Article_parent {
 	 * TODO: maybe move this to module config because this is like a constant
 	 * @var array
 	 */
-	private $size_match_array = [
-		'general' => [ // trainer,
+	private $size_match_string_array = [
+		'general' => [ // trainer etc.
 			'36' => '| UK 3,5 | US&#9792; 5,5 | US&#9794; 4,5',
 			'37' => '| UK 4-4,5 | US&#9792; 6-6,5 | US&#9794; 5-5,5',
 			'38' => '| UK 5 | US&#9792; 7 | US&#9794; 6',
@@ -37,7 +37,7 @@ class Article extends Article_parent {
 			'47' => '| UK 12 | US&#9792; 14 | US&#9794; 13',
 			'48' => '| UK 12,5-13 | US&#9794; 13,5-14',
 		],
-		'Urban Classic' => [
+		'Urban Classics' => [
 			'women' => [
 				'36' => '| UK 3,5 | US&#9792; 5,5',
 				'37' => '| UK 4-4,5 | US&#9792; 6-6,5',
@@ -55,6 +55,151 @@ class Article extends Article_parent {
 				'44' => '| UK 9,5-10 | US&#9794; 10,5-11',
 				'45' => '| UK 10,5 | US&#9794; 11,5',
 				'46' => '| UK 11-11,5 | US&#9794; 12-12,5',
+			],
+		]
+	];
+	private $size_match_array = [
+		'general' => [ // trainer etc.
+			'head' => array(
+				'UK',
+				'US (WOMEN)',
+				'US (MEN)',
+			),
+			'36' => array(
+				'3,5', // UK
+				'5,5', // US WOMEN
+				'4,5', // US MEN
+			),
+			'37' => array(
+				'4-4,5', // UK
+				'6-6,5', // US WOMEN
+				'5-5,5', // US MEN
+			),
+			'38' => array(
+				'5', // UK
+				'7', // US WOMEN
+				'6', // US MEN
+			),
+			'39' => array(
+				'5,5-6', // UK
+				'7,5-8', // US WOMEN
+				'7,5', // US MEN
+			),
+			'40' => array(
+				'6,5', // UK
+				'8,5', // US WOMEN
+				'6,5-7', // US MEN
+			),
+			'41' => array(
+				'7-7,5', // UK
+				'9-9,5', // US WOMEN
+				'8-8,5', // US MEN
+			),
+			'42' => array(
+				'8-8,5', // UK
+				'10-10,5', // US WOMEN
+				'9-9,5', // US MEN
+			),
+			'43' => array(
+				'9', // UK
+				'11', // US WOMEN
+				'10', // US MEN
+			),
+			'44' => array(
+				'9,5-10', // UK
+				'11,5-12', // US WOMEN
+				'10,5-11', // US MEN
+			),
+			'45' => array(
+				'10,5', // UK
+				'12,5', // US WOMEN
+				'11,5', // US MEN
+			),
+			'46' => array(
+				'11-11,5', // UK
+				'13-13,5', // US WOMEN
+				'12-12,5', // US MEN
+			),
+			'47' => array(
+				'12', // UK
+				'14', // US WOMEN
+				'13', // US MEN
+			),
+			'48' => array(
+				'12,5-13', // UK
+				'-', // US WOMEN
+				'13,5-14', // US MEN
+
+			),
+		],
+		'Urban Classics' => [
+			'women' => [
+				'head' => array(
+					'UK',
+					'US (WOMEN)',
+				),
+				'36' => array(
+					'3,5', // UK
+					'5,5', // US WOMEN
+				),
+				'37' => array(
+					'4-4,5', // UK
+					'6-6,5', // US WOMEN
+				),
+				'38' => array(
+					'5', // UK
+					'7', // US WOMEN
+				),
+				'39' => array(
+					'5,5-6', // UK
+					'7,5-8', // US WOMEN
+				),
+				'40' => array(
+					'6,5', // UK
+					'8,5', // US WOMEN
+				),
+				'41' => array(
+					'7-7,5', // UK
+					'9-9,5', // US WOMEN
+				),
+				'42' => array(
+					'8-8,5', // UK
+					'10-10,5', // US WOMEN
+				),
+			],
+			'men' => [
+				'head' => array(
+					'UK',
+					'US (MEN)',
+				),
+				'40' => array(
+					'6,5', // UK
+					'7,5', // US MEN
+				),
+				'41' => array(
+					'7-7,5', // UK
+					'8-8,5', // US MEN
+				),
+				'42' => array(
+					'8-8,5', // UK
+					'9-9,5', // US MEN
+				),
+				'43' => array(
+					'9', // UK
+					'10', // US MEN
+				),
+				'44' => array(
+					'9,5-10', // UK
+					'10,5-11', // US MEN
+				),
+				'45' => array(
+					'10,5', // UK
+					'11,5', // US MEN
+				),
+				'46' => array(
+					'11-11,5', // UK
+					'12-12,5', // US MEN
+				),
 			],
 		]
 	];
@@ -92,7 +237,7 @@ class Article extends Article_parent {
 	/**
 	 * @return string
 	 */
-	public function get_size_structure($size) {
+	public function get_size_structure($size, $return_array=false) {
 		if(method_exists($this,'getAttributesByIdent') && $size) {
 			$oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 			$oCurrency = $oConfig->getActShopCurrencyObject();
@@ -101,21 +246,40 @@ class Article extends Article_parent {
 
 			$return_value = "";
 
-			if($collection == 'Urban Classic') {
+			if($collection == 'Urban Classics') {
 				$gender = $this->getAttributesByIdent('gender', true);
 
-				if($return_value = $this->size_match_array
-					[$collection]
-					[( strtolower($gender)=='frau'||strtolower($gender)=='women'?'women':'men' )]
-					[strtolower($size)]
-				) {
-					return $return_value;
+				if(!$return_array) {
+					if($return_value = $this->size_match_string_array
+						[$collection]
+						[( strtolower($gender)=='frau'||strtolower($gender)=='women'?'women':'men' )]
+						[strtolower($size)]
+					) {
+						return $return_value;
+					}
+				} else {
+					if($return_value = $this->size_match_array
+						[$collection]
+						[( strtolower($gender)=='frau'||strtolower($gender)=='women'?'women':'men' )]
+						[strtolower($size)]
+					) {
+						return $return_value;
+					}
+
 				}
 			} else {
-				$return_value = $this->size_match_array['general'][strtolower($size)];
+				if(!$return_array) {
+					$return_value = $this->size_match_string_array['general'][strtolower($size)];
+				} else {
+					$return_value = $this->size_match_array['general'][strtolower($size)];
+				}
 			}
 
-			return str_replace(',', $sDecimalsSeparator, $return_value);
+			if(!is_array($return_value)) {
+				return str_replace(',', $sDecimalsSeparator, $return_value);
+			} else {
+				return $return_value;
+			}
 		}
 
 		return '';
