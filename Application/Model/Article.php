@@ -18,6 +18,11 @@ class Article extends Article_parent {
 	public $method_exists_get_size_structure = true;
 
 	/**
+	 * @var bool
+	 */
+	public $method_exists_getPreparedBasePrice = true;
+
+	/**
 	 * TODO: maybe move this to module config because this is like a constant
 	 * @var array
 	 */
@@ -283,6 +288,19 @@ class Article extends Article_parent {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Return the BasePrice with correct calculated vat
+	 * @return double
+	 */
+	public function getPreparedBasePrice() {
+		$show_netto = null; // null = don't show netto price
+		$oVatSelector = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Application\Model\VatSelector::class);
+		if (($dVat = $oVatSelector->getArticleUserVat($this)) !== false) {
+			$show_netto = 1;
+		}
+		return $this->_preparePrice($this->getBasePrice(), $this->getArticleVat(), $show_netto);
 	}
 }
 ?>
