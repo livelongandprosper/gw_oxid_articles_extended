@@ -302,5 +302,41 @@ class Article extends Article_parent {
 		}
 		return $this->_preparePrice($this->getBasePrice(), $this->getArticleVat(), $show_netto);
 	}
+
+	/**
+	 * Get related products
+	 */
+	public function getRelatedProducts() {
+		$oxid = $this->oxarticles__oxparentid->value;
+		if(!$oxid) {
+			$oxid = $this->getId();
+		}
+
+		$oCrosslist = oxNew(\OxidEsales\Eshop\Application\Model\ArticleList::class);
+		$oCrosslist->loadArticleRelatedProducts($oxid);
+		if ($oCrosslist->count()) {
+			return $oCrosslist;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get accessory articles
+	 */
+	public function getAccessories() {
+		$oxid = $this->oxarticles__oxparentid->value;
+		if(!$oxid) {
+			$oxid = $this->getId();
+		}
+		$oCrosslist = oxNew(\OxidEsales\Eshop\Application\Model\ArticleList::class);
+		$oCrosslist->loadArticleAccessoires($oxid);
+		if ($oCrosslist->count()) {
+			return $oCrosslist;
+		}
+
+		return null;
+	}
+
 }
 ?>
