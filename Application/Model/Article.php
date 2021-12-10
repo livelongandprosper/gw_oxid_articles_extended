@@ -23,6 +23,12 @@ class Article extends Article_parent {
 	public $method_exists_getPreparedBasePrice = true;
 
 	/**
+	 * Should store article list with articles of same color
+	 * @var null
+	 */
+	public $oColorArticlesList = null;
+
+	/**
 	 * TODO: maybe move this to module config because this is like a constant
 	 * @var array
 	 */
@@ -304,16 +310,15 @@ class Article extends Article_parent {
 	}
 
 	/**
-	 * Get related products
+	 * Get suitable products
 	 */
-	public function getRelatedProducts() {
-		$oxid = $this->oxarticles__oxparentid->value;
-		if(!$oxid) {
-			$oxid = $this->getId();
-		}
-
+	public function getSuitableProducts() {
 		$oCrosslist = oxNew(\OxidEsales\Eshop\Application\Model\ArticleList::class);
-		$oCrosslist->loadArticleRelatedProducts($oxid);
+		if($oParent = $this->getParentArticle()) {
+			$oCrosslist->loadSuitableProducts($oParent);
+		} else {
+			$oCrosslist->loadSuitableProducts($this);
+		}
 		if ($oCrosslist->count()) {
 			return $oCrosslist;
 		}
@@ -330,12 +335,50 @@ class Article extends Article_parent {
 			$oxid = $this->getId();
 		}
 		$oCrosslist = oxNew(\OxidEsales\Eshop\Application\Model\ArticleList::class);
+
+		// load manually assigned accessories
 		$oCrosslist->loadArticleAccessoires($oxid);
+
 		if ($oCrosslist->count()) {
 			return $oCrosslist;
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get similar articles
+	 */
+	public function getSimilarProducts() {
+		$oCrosslist = oxNew(\OxidEsales\Eshop\Application\Model\ArticleList::class);
+
+		// load manually assigned accessories
+		if($oParent = $this->getParentArticle()) {
+			$oCrosslist->loadSimilarArticlesByArtNrRelation($oParent);
+		} else {
+			$oCrosslist->loadSimilarArticlesByArtNrRelation($this);
+		}
+
+		if ($oCrosslist->count()) {
+			return $oCrosslist;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Genereates the base color name according to
+	 * @return string
+	 */
+	public function getBaseColorName() {
+		$baseLanguageId = \OxidEsales\Eshop\Core\Registry::getLang()->getBaseLanguage();
+		$myConfig = $this->getConfig();
+		$article_number_db_field = $myConfig->getConfigParam('gw_oxid_articles_extended_model_dbfield');
+		$model_number_separator = $myConfig->getConfigParam('gw_oxid_articles_extended_model_separator');
+		$article_number = $this->{'oxarticles__'.$article_number_db_field}->value;
+		$separator_string_position = strripos($article_number, $model_number_separator);
+		$colorCode = (string)substr( $article_number, $separator_string_position + 2 + strlen($model_number_separator), 2 );
+		return \OxidEsales\Eshop\Core\Registry::getLang()->translateString('ZEHA_BASE_COLOR_'.$colorCode, $baseLanguageId, false);
 	}
 
 }

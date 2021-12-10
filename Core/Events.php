@@ -52,6 +52,9 @@
 				self::add_db_key('oxarticles', 'gw_OXVARSELECT_OXPARENT', array("OXVARSELECT","OXPARENTID"));
 				self::add_db_key('oxarticles', 'gw_OXVARSELECT_1_OXPARENT', array("OXVARSELECT_1","OXPARENTID"));
 
+				self::add_db_field('oxcategories', 'gw_frontend_title', "VARCHAR(255) NOT NULL COMMENT 'alternative page title'");
+				self::add_db_field('oxcategories', 'gw_frontend_title_1', "VARCHAR(255) NOT NULL COMMENT 'alternative page title secondary lang'");
+
 			}	catch (OxidEsales\Eshop\Core\Exception\DatabaseErrorException $e) {
 				// do nothing... php will ignore and continue
 			}
@@ -62,6 +65,11 @@
 		public static function onDeactivate() {
 			$config = \OxidEsales\Eshop\Core\Registry::getConfig();
 			DatabaseProvider::getDb()->execute("DELETE FROM oxtplblocks WHERE oxshopid='".$config->getShopId()."' AND oxmodule='gw_oxid_articles_extended';");
+			DatabaseProvider::getDb()->execute("ALTER TABLE oxarticles DROP INDEX gw_OXVARSELECT;");
+			DatabaseProvider::getDb()->execute("ALTER TABLE oxarticles DROP INDEX gw_OXVARSELECT_1;");
+			DatabaseProvider::getDb()->execute("ALTER TABLE oxarticles DROP INDEX gw_OXVARSELECT_OXPARENT;");
+			DatabaseProvider::getDb()->execute("ALTER TABLE oxarticles DROP INDEX gw_OXVARSELECT_1_OXPARENT;");
+
 			exec( "rm -f " .$config->getConfigParam( 'sCompileDir' )."/smarty/*" );
 			exec( "rm -Rf " .$config->getConfigParam( 'sCompileDir' )."/*" );
 			$oDbMetaDataHandler = oxNew(DbMetaDataHandler::class);
