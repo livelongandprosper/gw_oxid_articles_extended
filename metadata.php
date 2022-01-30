@@ -10,7 +10,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '2'; // see https://docs.oxid-esales.com/developer/en/6.0/modules/skeleton/metadataphp/version20.html
+$sMetadataVersion = '2.0'; // see https://docs.oxid-esales.com/developer/en/6.0/modules/skeleton/metadataphp/version20.html
 
 /**
  * Module information
@@ -47,8 +47,6 @@ $aModule = array(
 		array('group' => 'gw_oxid_articles_extended_crossselling', 'name' => 'gw_oxid_articles_extended_model_separator', 'type' => 'str', 'value' => '.'),
 		array('group' => 'gw_oxid_articles_extended_crossselling', 'name' => 'gw_oxid_articles_extended_similar_suffix_length', 'type' => 'str', 'value' => '0'),
 		array('group' => 'gw_oxid_articles_extended_crossselling', 'name' => 'gw_oxid_articles_extended_accessories_category', 'type' => 'str', 'value' => ''),
-    ),
-    'files'			=> array(
     ),
 	'blocks' => array(
 		// backend
