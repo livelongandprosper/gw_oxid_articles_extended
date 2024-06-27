@@ -26,6 +26,7 @@ $aModule = array(
     'description'  => array(
     	'de'		=> 'Erweitert die Möglichkeiten von OXID eShop Artikeln
 							<ul>
+								<li>Es ist möglich das 8. Artikelbild zu laden ($oArticle->getThumbnailNoEight)</li>
 								<li>Fügt der Article Klasse die Funktion variant_has_stock($varselect) hinzu</li>
 								<li>Berechnet die Schuhgrößen US und UK anhand der EU Schuhgröße (Voraussetzung: des Modul gw_oxid_attributes_extended muss installiert sein)</li>
 								<li>Ermöglicht über die Funktion Article::getRelatedProducts() alle Crossselling-Artikel eines Artikels in einer Liste zu erhalten</li>
