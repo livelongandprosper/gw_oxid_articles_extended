@@ -430,5 +430,19 @@ class Article extends Article_parent {
 		return \OxidEsales\Eshop\Core\Registry::getLang()->translateString('ZEHA_BASE_COLOR_'.$colorCode, $baseLanguageId, false);
 	}
 
+	public function getThumbnailNoEight($bSsl = null) {
+		$sImgName = false;
+		$sDirname = "product/8/";
+		if (!$this->_isFieldEmpty("oxarticles__oxpic8")) {
+			$sImgName = basename($this->oxarticles__oxpic8->value);
+		} else {
+			return $this->getThumbnailUrl($bSsl);
+		}
+
+		$sSize = $this->getConfig()->getConfigParam('sThumbnailsize');
+
+		return \OxidEsales\Eshop\Core\Registry::getPictureHandler()->getProductPicUrl($sDirname, $sImgName, $sSize, 0, $bSsl);
+	}
+
 }
 ?>
